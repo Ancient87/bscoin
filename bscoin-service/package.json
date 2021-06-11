@@ -1,0 +1,38 @@
+{
+  "name": "bscoin-service",
+  "version": "1.0.0",
+  "description": "Computes information about DeFi providers and pools",
+  "main": "index.ts",
+  "scripts": {
+    "test": "env-cmd -f .env.test mocha --inspect=0.0.0.0:8080 --watch --extensions ts --watch-files src-ts,tests -r ts-node/register 'tests/**/*.ts' --watch",
+    "compile": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ancient87/bscoin.git"
+  },
+  "author": "Severin Gassauer-Fleissner <severin.gassauer@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ancient87/bscoin/issues"
+  },
+  "homepage": "https://github.com/Ancient87/bscoin#readme",
+  "devDependencies": {
+    "@types/chai": "^4.2.12",
+    "@types/chai-as-promised": "^7.1.3",
+    "@types/node": "^15.12.2",
+    "@types/sinon": "^9.0.10",
+    "aws-sdk": "^2.655.0",
+    "aws-sdk-mock": "^5.1.0",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "env-cmd": "^10.1.0",
+    "faker": "^5.1.0",
+    "mocha": "^8.1.1",
+    "mocha-param": "^2.0.1",
+    "node-inspect": "^2.0.0",
+    "nyc": "^15.1.0",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.2"
+  }
+}
