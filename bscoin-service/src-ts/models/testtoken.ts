@@ -1,16 +1,19 @@
+import { setupMaster } from "cluster";
 import { IContract } from "./icontract";
-import { IToken, ITokenConfig } from "./itoken";
+import { TokenBase, ITokenConfig } from "./tokenbase";
 
-export type ITestTokenConfig = ITokenConfig & {
-}
+export type ITestTokenConfig = ITokenConfig & {};
 
-export class TestToken implements IToken {
+export class TestToken extends TokenBase {
   name: string;
   contract: IContract;
   totalSupply: number;
-  quote: number;
+  valuation: number;
 
   constructor(config: ITestTokenConfig) {
-    Object.assign(this, config);
+    super(config);
+  }
+  marketCap(): number {
+    throw new Error("Method not implemented.");
   }
 }

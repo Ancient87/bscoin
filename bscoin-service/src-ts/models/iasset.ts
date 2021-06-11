@@ -1,12 +1,12 @@
 import { IContract } from "./icontract";
-import { IToken } from "./itoken";
+import { IToken } from "./tokenbase";
 
 export type IAssetConfig = {
   firstToken: IToken;
   secondToken: IToken;
   firstTokenBalance: number;
   secondTokenBalance: number;
-}
+};
 
 export interface IAsset {
   firstToken: IToken;
@@ -14,7 +14,6 @@ export interface IAsset {
   firstTokenBalance: number;
   secondTokenBalance: number;
 
-  futureAssetShareForDollarAmount(inputAmmount: number):number;
-  assetBalanceOf(input: IContract): number;
+  futureAssetShareForDollarAmount(inputAmmount: number): number;
+  balanceOf(input: IContract): number;
 }
-

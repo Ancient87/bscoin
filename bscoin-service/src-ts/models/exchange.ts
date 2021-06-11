@@ -1,25 +1,19 @@
 import { IContract } from "./icontract";
-import { IExchange, IExchangeConfig } from "./iexchange";
+import { BaseExchange, IExchange, IExchangeConfig } from "./exchangebase";
 import { INetwork } from "./inetwork";
-import { IPool } from "./ipool";
-import { IToken } from "./itoken";
+import { BasePool } from "./poolbase";
+import { IToken } from "./tokenbase";
 
-export class Exchange implements IExchange {
-    id: string;
-    name: string;
-    bsToken: IToken;
-    masterChef: IContract;
-    network: INetwork;
-    tokensPerBlock: number;
-    pools: IPool[];
+export class Exchange extends BaseExchange {
+  id: string;
+  name: string;
+  exchangeToken: IToken;
+  masterChef: IContract;
+  network: INetwork;
+  tokensPerBlock: number;
+  pools: BasePool[];
 
-    constructor(config: IExchangeConfig) {
-      Object.assign(this, config);
-      this.pools = new Array<IPool>();
-    }
-
-    getTokensPerDay(): number {
-      return this.tokensPerBlock*this.network.blocksPerDay;
-    }
-
+  constructor(config: IExchangeConfig) {
+    super(config);
+  }
 }

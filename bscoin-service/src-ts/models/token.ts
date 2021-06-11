@@ -1,14 +1,13 @@
 import { IContract } from "./icontract";
-import { IToken, ITokenConfig } from "./itoken";
+import { ITokenConfig, TokenBase } from "./tokenbase";
 
-export class Token implements IToken {
+export class Token extends TokenBase {
   name: string;
   contract: IContract;
   totalSupply: number;
-  quote: number;
+  valuation: number;
 
   constructor(config: ITokenConfig) {
-    Object.assign(this, config);
+    super(config);
   }
-  
 }

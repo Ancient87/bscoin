@@ -1,18 +1,21 @@
 import { IContract } from "./icontract";
-import { IExchange } from "./iexchange";
+import { BaseExchange, IExchange } from "./exchangebase";
 import { INetwork } from "./inetwork";
-import { IPool } from "./ipool";
-import { IToken } from "./itoken";
+import { BasePool } from "./poolbase";
+import { IToken } from "./tokenbase";
 
-export class TestExchange implements IExchange {
-    id: string;
-    name: string;
-    bsToken: IToken;
-    masterChef: IContract;
-    network: INetwork;
-    pools: IPool[];
-    tokensPerBlock: number;
+export class TestExchange extends BaseExchange {
+  id: string;
+  name: string;
+  exchangeToken: IToken;
+  masterChef: IContract;
+  network: INetwork;
+  pools: BasePool[];
+  tokensPerBlock: number;
 
-    getTokensPerDay: () => number;
+  tokensPerDay: () => number;
 
+  exchangeTokenPostInflationValue(): number {
+    throw new Error("Method not implemented.");
+  }
 }
