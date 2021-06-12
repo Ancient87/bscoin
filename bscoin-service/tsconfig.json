@@ -10,6 +10,6 @@
     "emitDecoratorMetadata": true,
     "lib": ["esnext.intl"]
   },
-  "include": ["src-ts/**/*"],
+  "include": ["src-ts/**/*", "tests/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

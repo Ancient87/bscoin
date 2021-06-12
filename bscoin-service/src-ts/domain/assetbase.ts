@@ -1,21 +1,25 @@
-import { IAsset, IAssetConfig } from "./iasset";
 import { IContract } from "./icontract";
-import { IToken } from "./tokenbase";
+import { TokenBase } from "./tokenbase";
+import { AggregateRoot } from "../common/aggregateroot";
 
-export class Asset implements IAsset {
-  firstToken: IToken;
-  secondToken: IToken;
+export type IAssetProps = {
+  id?: string;
+  firstToken: TokenBase;
+  secondToken: TokenBase;
   firstTokenBalance: number;
   secondTokenBalance: number;
+};
 
-  constructor(config: IAssetConfig) {
-    Object.assign(this, config);
+export abstract class BaseAsset extends AggregateRoot<IAssetProps> {
+  constructor({ id, ...data }: IAssetProps) {
+    super(data, id);
   }
 
   get totalValue(): number {
-    const firstTokenValue = this.firstToken.valuation * this.firstTokenBalance;
+    const firstTokenValue =
+      this.props.firstToken.valuation * this.props.firstTokenBalance;
     const secondTokenValue =
-      this.secondToken.valuation * this.secondTokenBalance;
+      this.props.secondToken.valuation * this.props.secondTokenBalance;
 
     return firstTokenValue + secondTokenValue;
   }

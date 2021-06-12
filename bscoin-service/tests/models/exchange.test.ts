@@ -1,5 +1,5 @@
-import { Exchange } from "../../src-ts/models/exchange";
-import { Token } from "../../src-ts/models/token";
+import { Exchange } from "../../src-ts/domain/exchange";
+import { Token } from "../../src-ts/domain/token";
 import "./fixtures/fixtures";
 import {
   testTwoHundredDollarToken,
@@ -54,7 +54,7 @@ describe(`Test token inflation`, () => {
 
   inflationTestCases.forEach((testCase) => {
     const augmentedExchangeToken = new Token({
-      ...testStableToken,
+      ...testStableToken.props,
       totalSupply: testCase.args.currentSupply,
     });
 

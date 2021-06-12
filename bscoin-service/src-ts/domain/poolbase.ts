@@ -1,11 +1,11 @@
-import { IAsset } from "./iasset";
+import { BaseAsset } from "./assetbase";
 import { IExchange } from "./exchangebase";
-import { IToken } from "./tokenbase";
+import { TokenBase } from "./tokenbase";
 
 export type IPoolConfig = {
   exchange: IExchange;
-  rewardToken: IToken;
-  stakedAsset: IAsset;
+  rewardToken: TokenBase;
+  stakedAsset: BaseAsset;
   id: string;
   weighting: number;
   depositFee: number;
@@ -15,8 +15,8 @@ export type IPoolConfig = {
 
 export interface IPool {
   exchange: IExchange;
-  rewardToken: IToken;
-  stakedAsset: IAsset;
+  rewardToken: TokenBase;
+  stakedAsset: BaseAsset;
   id: number;
   weighting: number;
   depositFee: number;
@@ -32,8 +32,8 @@ export interface IPool {
 export class BasePool implements IPool {
   exchange: IExchange;
   tokensPerBlock: number;
-  rewardToken: IToken;
-  stakedAsset: IAsset;
+  rewardToken: TokenBase;
+  stakedAsset: BaseAsset;
   id: number;
   weighting: number;
   depositFee: number;

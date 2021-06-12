@@ -1,12 +1,12 @@
 import { IContract } from "./icontract";
 import { INetwork } from "./inetwork";
 import { BasePool } from "./poolbase";
-import { IToken } from "./tokenbase";
+import { TokenBase } from "./tokenbase";
 
 export type IExchangeConfig = {
   id: string;
   name: string;
-  exchangeToken: IToken;
+  exchangeToken: TokenBase;
   masterChef: IContract;
   network: INetwork;
   tokensPerBlock: number;
@@ -15,7 +15,7 @@ export type IExchangeConfig = {
 export interface IExchange {
   id: string;
   name: string;
-  exchangeToken: IToken;
+  exchangeToken: TokenBase;
   masterChef: IContract;
   network: INetwork;
   pools: BasePool[];
@@ -29,7 +29,7 @@ export interface IExchange {
 export class BaseExchange implements IExchange {
   id: string;
   name: string;
-  exchangeToken: IToken;
+  exchangeToken: TokenBase;
   masterChef: IContract;
   network: INetwork;
   tokensPerBlock: number;
@@ -44,7 +44,7 @@ export class BaseExchange implements IExchange {
     const futureExchangeTokenSupply =
       this.exchangeToken.totalSupply + this.tokensPerDay();
 
-    return this.exchangeToken.marketCap() / futureExchangeTokenSupply;
+    return this.exchangeToken.marketCap / futureExchangeTokenSupply;
   }
 
   exchangeTokenDailyInflationRate(): number {

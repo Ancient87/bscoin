@@ -1,21 +1,14 @@
-import { TestAsset } from "../../src-ts/models/testasset";
-import { Pool } from "../../src-ts/models/pool";
+import { Pool } from "../../src-ts/domain/pool";
 import {
   testTwoHundredDollarToken,
   testExchange,
-  testAsset,
-  TEST_TOKENS_PER_BLOCK,
-  testNetwork,
+  makeWhollyOwnedAssetWorth,
 } from "./fixtures/fixtures";
-var itParam = require("mocha-param");
 
 var chai = require("chai");
 var expect = chai.expect; // we are using the "expect" style of Chai
-var assert = require("assert");
 
-const testAssetTenThousand = new TestAsset({
-  _currentPoolTotalAsset: 10000,
-});
+const whollyOwnedAssetWorthTenThousand = makeWhollyOwnedAssetWorth(10000);
 
 describe("Test future pool share for added funds", () => {
   const testCases = [
@@ -23,7 +16,7 @@ describe("Test future pool share for added funds", () => {
       config: {
         exchange: testExchange,
         rewardToken: testTwoHundredDollarToken,
-        stakedAsset: testAssetTenThousand,
+        stakedAsset: whollyOwnedAssetWorthTenThousand,
         id: "TEST",
         weighting: 0.1,
         depositFee: 0,
@@ -54,7 +47,7 @@ describe("Test future tokens per day for added funds", () => {
       config: {
         exchange: testExchange,
         rewardToken: testTwoHundredDollarToken,
-        stakedAsset: testAssetTenThousand,
+        stakedAsset: whollyOwnedAssetWorthTenThousand,
         id: "TEST",
         weighting: 0.1,
         depositFee: 0,
@@ -83,7 +76,7 @@ describe("Test real APR calculation", () => {
       config: {
         exchange: testExchange,
         rewardToken: testTwoHundredDollarToken,
-        stakedAsset: testAssetTenThousand,
+        stakedAsset: whollyOwnedAssetWorthTenThousand,
         id: "TEST",
         weighting: 0.1,
         depositFee: 0,
@@ -96,7 +89,7 @@ describe("Test real APR calculation", () => {
   ];
 
   testCases.forEach((testCase) => {
-    it(`Should confirm that daily interest accounting for inflation for $${testCase.input} equals ${testCase.expected}$ per day`, () => {
+    it(`Should confirm that daily interest accounting for inflation for $${testCase.input} equals $${testCase.expected} per day`, () => {
       const poolUnderTest = new Pool(testCase.config);
 
       expect(

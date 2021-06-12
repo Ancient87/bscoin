@@ -1,11 +1,11 @@
-import { Exchange } from "../../../src-ts/models/exchange";
-import { Address } from "../../../src-ts/models/address";
-import { Contract } from "../../../src-ts/models/contract";
-import { Token } from "../../../src-ts/models/token";
-import { Network } from "../../../src-ts/models/network";
-import { Asset } from "../../../src-ts/models/asset";
-import { TestAsset } from "../../../src-ts/models/testasset";
-import { Pool } from "../../../src-ts/models/pool";
+import { Exchange } from "../../../src-ts/domain/exchange";
+import { Address } from "../../../src-ts/domain/address";
+import { Contract } from "../../../src-ts/domain/contract";
+import { Token } from "../../../src-ts/domain/token";
+import { Network } from "../../../src-ts/domain/network";
+import { Asset } from "../../../src-ts/domain/asset";
+import { WhollyOwnedAsset } from "../../../src-ts/domain/assetwhollyowned";
+import { Pool } from "../../../src-ts/domain/pool";
 
 export const TEST_NETWORK_BLOCKS_PER_DAY = 10000;
 export const TEST_TOKENS_PER_BLOCK = 100;
@@ -66,9 +66,23 @@ export const pantherSwapExchange = new Exchange({
   tokensPerBlock: 75,
 });
 
-const testAssetTenMillion = new TestAsset({
-  _currentPoolTotalAsset: 10000000,
-});
+export const makeWhollyOwnedAssetWorth = (desiredWorth: number): Asset => {
+  return new WhollyOwnedAsset({
+    ...makeAssetWorth(desiredWorth).props,
+  });
+};
+
+export const makeAssetWorth = (desiredWorth: number): Asset => {
+  return new Asset({
+    ...testAsset.props,
+    firstToken: testStableToken,
+    secondToken: testStableToken,
+    firstTokenBalance: desiredWorth / 2,
+    secondTokenBalance: desiredWorth / 2,
+  });
+};
+
+const testAssetTenMillion = makeAssetWorth(10000000);
 
 export const pantherSwapBusdPool = new Pool({
   exchange: testExchange,
