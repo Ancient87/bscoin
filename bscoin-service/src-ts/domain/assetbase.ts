@@ -15,6 +15,22 @@ export abstract class BaseAsset extends AggregateRoot<IAssetProps> {
     super(data, id);
   }
 
+  get firstToken() {
+    return this.props.firstToken;
+  }
+
+  get secondToken() {
+    return this.props.secondToken;
+  }
+
+  get firstTokenBalance() {
+    return this.props.firstTokenBalance;
+  }
+
+  get secondTokenBalance() {
+    return this.props.secondTokenBalance;
+  }
+
   get totalValue(): number {
     const firstTokenValue =
       this.props.firstToken.valuation * this.props.firstTokenBalance;

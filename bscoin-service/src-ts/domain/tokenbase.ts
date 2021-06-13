@@ -1,6 +1,7 @@
 import { AggregateRoot } from "../common/aggregateroot";
-import { Entity } from "../common/entity";
+import { percentageDifference } from "../common/mathhelper";
 import { IContract } from "./icontract";
+import { BaseNetwork } from "./networkbase";
 
 export type ITokenProps = {
   id?: string;
@@ -8,6 +9,8 @@ export type ITokenProps = {
   contract: IContract;
   totalSupply: number;
   valuation: number;
+  network: BaseNetwork;
+  emissionsPerBlock?: number;
 };
 
 export abstract class TokenBase extends AggregateRoot<ITokenProps> {
@@ -16,14 +19,36 @@ export abstract class TokenBase extends AggregateRoot<ITokenProps> {
   }
 
   get marketCap(): number {
-    return this._props.totalSupply * this._props.valuation;
+    return this.props.totalSupply * this.valuation;
   }
 
   get valuation(): number {
-    return this._props.valuation;
+    return this.props.valuation;
   }
 
   get totalSupply(): number {
-    return this._props.totalSupply;
+    return this.props.totalSupply;
+  }
+
+  get emissionsPerBlock(): number {
+    return this.props.emissionsPerBlock ? this.props.emissionsPerBlock : 0;
+  }
+
+  get emissionsPerDay(): number {
+    return this.props.network.blocksPerDay * this.emissionsPerBlock;
+  }
+
+  get valuationPostEmissions(): number {
+    return this.marketCap / (this.totalSupply + this.emissionsPerDay);
+  }
+
+  get valuationInflationDueToEmissions(): number {
+    return Math.abs(this.valuationPostEmissions - this.valuation);
+  }
+
+  get valuationInflationRateDueToEmissions(): number {
+    return Math.abs(
+      percentageDifference(this.valuation, this.valuationPostEmissions)
+    );
   }
 }

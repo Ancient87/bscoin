@@ -1,7 +1,3 @@
-import { BaseExchange, IExchangeConfig } from "./exchangebase";
+import { BaseExchange, IExchangeProps } from "./exchangebase";
 
-export class Exchange extends BaseExchange {
-  constructor(config: IExchangeConfig) {
-    super(config);
-  }
-}
+export class Exchange extends BaseExchange {}

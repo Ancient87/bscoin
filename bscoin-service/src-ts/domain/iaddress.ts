@@ -1,6 +1,6 @@
-import { INetwork } from "./inetwork";
+import { BaseNetwork } from "./networkbase";
 
 export interface IAddress {
   address: string;
-  network: INetwork;
+  network: BaseNetwork;
 }

@@ -1,7 +1,7 @@
 import { Exchange } from "../../../src-ts/domain/exchange";
 import { Address } from "../../../src-ts/domain/address";
 import { Contract } from "../../../src-ts/domain/contract";
-import { Token } from "../../../src-ts/domain/token";
+import { StableToken } from "../../../src-ts/domain/tokenstable";
 import { Network } from "../../../src-ts/domain/network";
 import { Asset } from "../../../src-ts/domain/asset";
 import { WhollyOwnedAsset } from "../../../src-ts/domain/assetwhollyowned";
@@ -10,35 +10,40 @@ import { Pool } from "../../../src-ts/domain/pool";
 export const TEST_NETWORK_BLOCKS_PER_DAY = 10000;
 export const TEST_TOKENS_PER_BLOCK = 100;
 
-export const testNetwork = new Network(
-  "TEST_NETWORK",
-  "TEST",
-  "TEST",
-  TEST_NETWORK_BLOCKS_PER_DAY
-);
+export const testNetworkHundredBlocksPerDay = new Network({
+  id: "TEST_NETWORK",
+  explorer: "TEST",
+  endpoint: "TEST",
+  blocksPerDay: TEST_NETWORK_BLOCKS_PER_DAY,
+});
 
-export const bscNetwork = new Network(
-  "BSC_NETWORK",
-  "TEST_BSC",
-  "TEST_BSC",
-  25000
-);
+export const bscNetwork = new Network({
+  id: "BSC_NETWORK",
+  explorer: "TEST_BSC",
+  endpoint: "TEST_BSC",
+  blocksPerDay: 25000,
+});
 
-export const testAddress = new Address("0xtest", testNetwork);
+export const testAddress = new Address(
+  "0xtest",
+  testNetworkHundredBlocksPerDay
+);
 export const testContract = new Contract(testAddress);
 
-export const testTwoHundredDollarToken = new Token({
+export const testTwoHundredDollarToken = new StableToken({
   name: "TEST_BS_TOKEN",
   contract: testContract,
   totalSupply: 1000000,
   valuation: 200,
+  network: testNetworkHundredBlocksPerDay,
 });
 
-export const testStableToken = new Token({
+export const testStableToken = new StableToken({
   name: "TEST_BS_TOKEN",
   contract: testContract,
   totalSupply: 1000000,
   valuation: 1,
+  network: testNetworkHundredBlocksPerDay,
 });
 
 export const testAsset = new Asset({
@@ -53,17 +58,7 @@ export const testExchange = new Exchange({
   name: "TEST_EXCHANGE",
   exchangeToken: testTwoHundredDollarToken,
   masterChef: testContract,
-  network: testNetwork,
-  tokensPerBlock: TEST_TOKENS_PER_BLOCK,
-});
-
-export const pantherSwapExchange = new Exchange({
-  id: "TEST",
-  name: "TEST_PANTHER",
-  exchangeToken: testTwoHundredDollarToken,
-  masterChef: testContract,
-  network: bscNetwork,
-  tokensPerBlock: 75,
+  network: testNetworkHundredBlocksPerDay,
 });
 
 export const makeWhollyOwnedAssetWorth = (desiredWorth: number): Asset => {
@@ -91,6 +86,6 @@ export const pantherSwapBusdPool = new Pool({
   id: "PANTHER-BUSD",
   weighting: 0.1,
   depositFee: 0,
-  tokensPerBlock: testExchange.tokensPerBlock * 40,
+  tokensPerBlock: testStableToken.emissionsPerBlock * 40,
   active: true,
 });

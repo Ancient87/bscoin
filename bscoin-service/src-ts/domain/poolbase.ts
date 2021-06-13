@@ -1,76 +1,68 @@
+import { throws } from "assert/strict";
+import { Entity } from "../common/entity";
 import { BaseAsset } from "./assetbase";
-import { IExchange } from "./exchangebase";
+import { BaseExchange } from "./exchangebase";
 import { TokenBase } from "./tokenbase";
 
-export type IPoolConfig = {
-  exchange: IExchange;
+export type IPoolProps = {
+  id?: string;
+  exchange: BaseExchange;
   rewardToken: TokenBase;
   stakedAsset: BaseAsset;
-  id: string;
   weighting: number;
   depositFee: number;
   tokensPerBlock: number;
   active: boolean;
 };
 
-export interface IPool {
-  exchange: IExchange;
-  rewardToken: TokenBase;
-  stakedAsset: BaseAsset;
-  id: number;
-  weighting: number;
-  depositFee: number;
-  tokensPerBlock: number;
-  active: boolean;
-
-  futurePoolShareForDollarAmount(inputAmount: number): number;
-  poolTokensPerBlockForShare(share: number): number;
-  futurePoolTokensPerDayForDollarAmount(inputAmount: number): number;
-  futureDailyInterestForDollarAmount(inputAmount: number): number;
-}
-
-export class BasePool implements IPool {
-  exchange: IExchange;
-  tokensPerBlock: number;
-  rewardToken: TokenBase;
-  stakedAsset: BaseAsset;
-  id: number;
-  weighting: number;
-  depositFee: number;
-  active: boolean;
-
-  constructor(config: IPoolConfig) {
-    Object.assign(this, config);
+export class BasePool extends Entity<IPoolProps> {
+  constructor({ id, ...data }: IPoolProps) {
+    super(data, id);
   }
 
-  futureDailyInterestForDollarAmount(inputAmount: number): number {
+  get stakedAsset(): BaseAsset {
+    return this.props.stakedAsset;
+  }
+
+  get rewardToken(): TokenBase {
+    return this.props.rewardToken;
+  }
+
+  get exchange(): BaseExchange {
+    return this.props.exchange;
+  }
+
+  futureDailyDollarInterestForDollarAmountAccountingForInflation(
+    inputAmount: number
+  ): number {
     return (
-      this.futurePoolTokensPerDayForDollarAmount(inputAmount) *
-      this.exchange.exchangeTokenPostInflationValue()
+      this.futureDailyDollarInterestForDollarAmount(inputAmount) *
+      this.props.exchange.exchangeTokenPostInflationValue
     );
   }
 
-  futurePoolTokensPerDayForDollarAmount(inputAmount: number): number {
-    return (
-      this.exchange.network.blocksPerDay *
-      this.tokensPerBlock *
-      this.futurePoolShareForDollarAmount(inputAmount)
+  futureDailyDollarInterestForDollarAmount(addedLiquidityUSD: number): number {
+    return this.futureLPsTokensPerBlockForUSD(addedLiquidityUSD);
+  }
+
+  futureLPsTokensPerBlockForUSD(addedLiqudityUSD: number): number {
+    return this.tokensPerBlockForShare(
+      this.futureLPsShareOfPoolForUSD(addedLiqudityUSD)
     );
   }
 
-  futurePoolShareForDollarAmount(inputAmmount: number): number {
-    const currentPoolsBlanceOfAsset = this.stakedAsset.balanceOf(
-      this.exchange.masterChef
-    );
-    const futureTotalStakedAssetAmount =
-      currentPoolsBlanceOfAsset + inputAmmount;
-    const inputsShareOfFuturePoolAsset =
-      inputAmmount / futureTotalStakedAssetAmount;
-
-    return inputsShareOfFuturePoolAsset;
+  futureLPsShareOfPoolForUSD(addedLiquidityUSD: number): number {
+    const futurePoolLiquidity =
+      this.stakedAsset.balanceOf(this.props.exchange.masterChef) +
+      addedLiquidityUSD;
+    return addedLiquidityUSD / futurePoolLiquidity;
   }
 
-  poolTokensPerBlockForShare(share: number): number {
+  get tokensPerBlock(): number {
+    return this.props.tokensPerBlock;
+  }
+
+  tokensPerBlockForShare(share: number): number {
     return share * this.tokensPerBlock;
   }
 }

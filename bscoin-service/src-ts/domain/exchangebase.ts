@@ -1,60 +1,45 @@
+import { AggregateRoot } from "../common/aggregateroot";
 import { IContract } from "./icontract";
-import { INetwork } from "./inetwork";
+import { BaseNetwork } from "./networkbase";
 import { BasePool } from "./poolbase";
 import { TokenBase } from "./tokenbase";
 
-export type IExchangeConfig = {
-  id: string;
+export type IExchangeProps = {
+  id?: string;
   name: string;
   exchangeToken: TokenBase;
   masterChef: IContract;
-  network: INetwork;
-  tokensPerBlock: number;
+  network: BaseNetwork;
+  pools?: BasePool[];
 };
 
-export interface IExchange {
-  id: string;
-  name: string;
-  exchangeToken: TokenBase;
-  masterChef: IContract;
-  network: INetwork;
-  pools: BasePool[];
-  tokensPerBlock: number;
-
-  tokensPerDay(): number;
-  exchangeTokenPostInflationValue(): number;
-  exchangeTokenDailyInflationRate(): number;
-}
-
-export class BaseExchange implements IExchange {
-  id: string;
-  name: string;
-  exchangeToken: TokenBase;
-  masterChef: IContract;
-  network: INetwork;
-  tokensPerBlock: number;
-  pools: BasePool[];
-
-  constructor(config: IExchangeConfig) {
-    Object.assign(this, config);
-    this.pools = new Array<BasePool>();
+export class BaseExchange extends AggregateRoot<IExchangeProps> {
+  constructor({ id, ...data }: IExchangeProps) {
+    super(data, id);
+    this.props.pools = new Array<BasePool>();
   }
 
-  exchangeTokenPostInflationValue(): number {
-    const futureExchangeTokenSupply =
-      this.exchangeToken.totalSupply + this.tokensPerDay();
-
-    return this.exchangeToken.marketCap / futureExchangeTokenSupply;
+  get blocksPerDay(): number {
+    return this.props.network.blocksPerDay;
   }
 
-  exchangeTokenDailyInflationRate(): number {
-    return Math.abs(
-      (this.exchangeTokenPostInflationValue() - this.exchangeToken.valuation) /
-        this.exchangeToken.valuation
-    );
+  get exchangeTokenPostInflationValue(): number {
+    return this.exchangeToken.valuationInflationDueToEmissions;
   }
 
-  tokensPerDay(): number {
-    return this.tokensPerBlock * this.network.blocksPerDay;
+  get exchangeTokenDailyInflationRate(): number {
+    return this.exchangeToken.valuationInflationRateDueToEmissions;
+  }
+
+  get network(): BaseNetwork {
+    return this.props.network;
+  }
+
+  get exchangeToken(): TokenBase {
+    return this.props.exchangeToken;
+  }
+
+  get masterChef(): IContract {
+    return this.props.masterChef;
   }
 }

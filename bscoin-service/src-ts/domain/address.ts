@@ -1,11 +1,11 @@
 import { IAddress } from "./iaddress";
-import { INetwork } from "./inetwork";
+import { BaseNetwork } from "./networkbase";
 
 export class Address implements IAddress {
   address: string;
-  network: INetwork;
+  network: BaseNetwork;
 
-  constructor(address: string, network: INetwork) {
+  constructor(address: string, network: BaseNetwork) {
     this.address = address;
     this.network = network;
   }
