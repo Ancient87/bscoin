@@ -66,11 +66,16 @@ export class BaseMasterchef extends AggregateRoot<IMasterchefProps> {
     return this.props.masterChef;
   }
 
+  specifiedPoolFutureAPRPerDayForThousandUSD(poolId: string): number {
+    return 1000 / this.specifiedPoolFutureUSDPerDayForUSD(poolId, 1000);
+  }
+
   specifiedPoolFutureUSDPerDayForUSD(
     poolId: string,
     addedLiquidityUSD: number
   ): number {
     const pool = this.getPoolByID(poolId);
+    debugger;
     return (
       pool.rewardToken.valuation *
       this.specifiedPoolFutureTokensPerDayForUSD(poolId, addedLiquidityUSD)
