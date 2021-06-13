@@ -15,7 +15,7 @@ describe("Pool", () => {
     const testCases = [
       {
         config: {
-          exchange: testExchange,
+          masterchef: testExchange,
           rewardToken: testTwoHundredDollarToken,
           stakedAsset: whollyOwnedAssetWorthTenThousand,
           id: "TEST",
@@ -46,7 +46,7 @@ describe("Pool", () => {
     const testCases = [
       {
         config: {
-          exchange: testExchange,
+          masterchef: testExchange,
           rewardToken: testTwoHundredDollarToken,
           stakedAsset: whollyOwnedAssetWorthTenThousand,
           id: "TEST",
@@ -76,7 +76,7 @@ describe("Pool", () => {
     const testCases = [
       {
         config: {
-          exchange: testExchange,
+          masterchef: testExchange,
           rewardToken: testTwoHundredDollarToken,
           stakedAsset: whollyOwnedAssetWorthTenThousand,
           id: "TEST",
@@ -86,7 +86,7 @@ describe("Pool", () => {
           active: true,
         },
         input: 1000,
-        expected: 200,
+        expected: 9.090909091,
       },
     ];
 

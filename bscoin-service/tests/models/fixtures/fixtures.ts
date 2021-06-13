@@ -1,4 +1,4 @@
-import { Exchange } from "../../../src-ts/domain/exchange";
+import { Masterchef } from "../../../src-ts/domain/masterchef";
 import { Address } from "../../../src-ts/domain/address";
 import { Contract } from "../../../src-ts/domain/contract";
 import { StableToken } from "../../../src-ts/domain/tokenstable";
@@ -8,6 +8,7 @@ import { WhollyOwnedAsset } from "../../../src-ts/domain/assetwhollyowned";
 import { Pool } from "../../../src-ts/domain/pool";
 
 export const TEST_NETWORK_BLOCKS_PER_DAY = 10000;
+export const BSC_NETWORK_BLOCKS_PER_DAY = 25000;
 export const TEST_TOKENS_PER_BLOCK = 100;
 
 export const testNetworkHundredBlocksPerDay = new Network({
@@ -53,10 +54,10 @@ export const testAsset = new Asset({
   secondTokenBalance: 100,
 });
 
-export const testExchange = new Exchange({
+export const testExchange = new Masterchef({
   id: "TEST",
   name: "TEST_EXCHANGE",
-  exchangeToken: testTwoHundredDollarToken,
+  rewardToken: testTwoHundredDollarToken,
   masterChef: testContract,
   network: testNetworkHundredBlocksPerDay,
 });
@@ -80,7 +81,7 @@ export const makeAssetWorth = (desiredWorth: number): Asset => {
 const testAssetTenMillion = makeAssetWorth(10000000);
 
 export const pantherSwapBusdPool = new Pool({
-  exchange: testExchange,
+  masterchef: testExchange,
   rewardToken: testTwoHundredDollarToken,
   stakedAsset: testAssetTenMillion,
   id: "PANTHER-BUSD",

@@ -1,16 +1,15 @@
-import { throws } from "assert/strict";
 import { Entity } from "../common/entity";
 import { BaseAsset } from "./assetbase";
-import { BaseExchange } from "./exchangebase";
+import { BaseMasterchef } from "./masterchefbase";
 import { TokenBase } from "./tokenbase";
 
 export type IPoolProps = {
   id?: string;
-  exchange: BaseExchange;
+  masterchef: BaseMasterchef;
   rewardToken: TokenBase;
   stakedAsset: BaseAsset;
   weighting: number;
-  depositFee: number;
+  depositFee?: number;
   tokensPerBlock: number;
   active: boolean;
 };
@@ -28,8 +27,8 @@ export class BasePool extends Entity<IPoolProps> {
     return this.props.rewardToken;
   }
 
-  get exchange(): BaseExchange {
-    return this.props.exchange;
+  get masterchef(): BaseMasterchef {
+    return this.props.masterchef;
   }
 
   futureDailyDollarInterestForDollarAmountAccountingForInflation(
@@ -37,7 +36,7 @@ export class BasePool extends Entity<IPoolProps> {
   ): number {
     return (
       this.futureDailyDollarInterestForDollarAmount(inputAmount) *
-      this.props.exchange.exchangeTokenPostInflationValue
+      this.props.masterchef.exchangeTokenPostInflationValue
     );
   }
 
@@ -52,10 +51,12 @@ export class BasePool extends Entity<IPoolProps> {
   }
 
   futureLPsShareOfPoolForUSD(addedLiquidityUSD: number): number {
-    const futurePoolLiquidity =
-      this.stakedAsset.balanceOf(this.props.exchange.masterChef) +
-      addedLiquidityUSD;
+    const futurePoolLiquidity = this.poolLiquidity + addedLiquidityUSD;
     return addedLiquidityUSD / futurePoolLiquidity;
+  }
+
+  get poolLiquidity(): number {
+    return this.stakedAsset.balanceOf(this.props.masterchef.masterChef);
   }
 
   get tokensPerBlock(): number {
